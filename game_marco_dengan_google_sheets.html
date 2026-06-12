@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Trust Ledger: Crossword Connection</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#0c0f12',
+                            panel: '#161a1f',
+                            accent: '#ff2a5f',
+                            cyan: '#00f0ff',
+                            yellow: '#ffe600',
+                            green: '#39ff14',
+                            border: '#1e293b'
+                        }
+                    },
+                    boxShadow: {
+                        brutal: '4px 4px 0px 0px #ff2a5f',
+                        'brutal-cyan': '4px 4px 0px 0px #00f0ff',
+                        'brutal-green': '4px 4px 0px 0px #39ff14',
+                        'brutal-yellow': '4px 4px 0px 0px #ffe600',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Grotesk:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #0c0f12;
+            color: #e2e8f0;
+        }
+        
+        .mono-font {
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* Custom Scrollbar for Neo-Brutalism Vibe */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #161a1f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff2a5f;
+            border: 2px solid #0c0f12;
+        }
+
+        /* Crossword Specific Input Highlight */
+        .grid-cell:focus-within {
+            background-color: rgba(0, 240, 255, 0.2) !important;
+            border-color: #00f0ff !important;
+        }
+        
+        /* Shaking animation on wrong entry */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+        .shake-effect {
+            animation: shake 0.2s ease-in-out 0s 2;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- TOP HEADER / STATUS BAR -->
+    <header class="border-b-4 border-black bg-cyber-panel p-4 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <span class="w-3 h-3 bg-cyber-accent animate-ping rounded-full"></span>
+            <h1 class="text-xl md:text-2xl font-bold tracking-wider mono-font text-cyber-accent">THE TRUST LEDGER</h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- Audio Controller -->
+            <button id="btn-audio" class="px-3 py-1 bg-cyber-bg border-2 border-black font-bold text-xs uppercase tracking-widest text-cyber-cyan hover:bg-cyber-cyan hover:text-black transition-all shadow-[2px_2px_0px_0px_#00f0ff]" onclick="toggleBGM()">
+                🔇 MUTE BGM
+            </button>
+            <span class="hidden md:inline text-xs text-slate-400 mono-font">V.2.0.26_SYSTEM_ACTIVE</span>
+        </div>
+    </header>
+
+    <!-- MAIN INTERACTIVE CONTAINER -->
+    <main class="flex-grow flex flex-col items-center justify-center p-4 max-w-6xl mx-auto w-full">
+        
+        <!-- SECTION 1: THE GATEWAY (REGISTRATION & HOOK) -->
+        <section id="section-gateway" class="w-full max-w-xl bg-cyber-panel border-4 border-black p-6 my-6 shadow-brutal transition-all">
+            <div class="text-center mb-6">
+                <span class="text-xs bg-cyber-yellow text-black px-2 py-1 font-bold tracking-widest uppercase inline-block mb-2">SECURITY ACCESS GATEWAY</span>
+                <h2 class="text-3xl font-extrabold text-white tracking-tight leading-none">CROSSWORD CONNECTION</h2>
+                <p class="text-sm text-slate-400 mt-2">Dunia kerja modern bukan sekadar menyelesaikan baris baris kode pemrograman. Ini adalah tentang jaringan relasi.</p>
+            </div>
+
+            <!-- HOOK QUESTION (WHY) -->
+            <div class="bg-cyber-bg border-l-4 border-cyber-cyan p-4 mb-6">
+                <p class="text-xs text-cyber-cyan tracking-wider uppercase font-bold mb-1">PERTANYAAN KRITIS:</p>
+                <p class="text-sm italic text-slate-300">
+                    "Pernahkah Anda melihat programmer jenius dengan kode sempurna, namun proyeknya selalu terhambat karena ia berselisih paham dengan seluruh tim? Berapa harga yang harus dibayar dari rusaknya komunikasi?"
+                </p>
+            </div>
+
+            <!-- INPUT FORM -->
+            <form id="form-login" onsubmit="handleStartGame(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs uppercase tracking-widest font-bold mb-2 text-slate-300">NAMA LENGKAP</label>
+                    <input type="text" id="input-nama" required pattern="[A-Za-z\s]+" oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')" class="w-full bg-cyber-bg border-2 border-black p-3 text-white focus:outline-none focus:border-cyber-accent text-sm" placeholder="Masukkan nama Anda (Hanya Huruf)...">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase tracking-widest font-bold mb-2 text-slate-300">NOMOR INDUK KARYAWAN (NIK)</label>
+                    <input type="text" id="input-nik" required pattern="[0-9]+" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full bg-cyber-bg border-2 border-black p-3 text-white focus:outline-none focus:border-cyber-accent text-sm" placeholder="Contoh: 2026987 (Hanya Angka)">
+                </div>
+
+                <button type="submit" class="w-full bg-cyber-accent text-white border-2 border-black py-4 font-extrabold text-lg uppercase tracking-widest hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all shadow-[4px_4px_0px_0px_#000] mt-4">
+                    BUKA AKSES DOKUMEN &raquo;
+                </button>
+            </form>
+        </section>
+
+        <!-- SECTION 2: MISSION BRIEFING -->
+        <section id="section-briefing" class="hidden w-full max-w-2xl bg-cyber-panel border-4 border-black p-6 my-6 shadow-brutal-cyan transition-all">
+            <div class="flex items-center gap-3 border-b-2 border-black pb-4 mb-4">
+                <div class="p-2 bg-cyber-cyan text-black font-bold text-sm">DOC-01</div>
+                <div>
+                    <h3 class="text-xl font-bold uppercase text-white">MISSI OBJECTIVE: THE TRUST ARCHITECT</h3>
+                    <p class="text-xs text-slate-400">Target Sistem: Rekening Bank Emosional (Emotional Bank Account - EBA)</p>
+                </div>
+            </div>
+
+            <!-- STORY DEBRIEF -->
+            <div class="space-y-4 text-sm text-slate-300 leading-relaxed">
+                <p>
+                    Halo <span id="briefing-user-name" class="font-bold text-cyber-cyan">User</span>, Anda baru saja ditunjuk sebagai <strong class="text-white">Project Lead</strong> di tim pengembang inti. Secara teknis Anda sangat hebat. Namun, tim Anda saat ini berada di ambang kehancuran karena <strong class="text-cyber-accent">blokade komunikasi</strong>.
+                </p>
+                <p>
+                    Designer mengabaikan QA, QA membenci Developer, dan Product Manager merasa diabaikan. Proyek besar senilai jutaan dolar terancam gagal bukan karena kegagalan komputasi, melainkan karena <strong class="text-cyber-yellow">krisis kepercayaan</strong>.
+                </p>
+                
+                <div class="bg-cyber-bg p-4 border-2 border-black space-y-2">
+                    <h4 class="text-xs uppercase text-cyber-yellow font-bold">⚠️ ATURAN PERMAINAN & MEKANIK:</h4>
+                    <ul class="list-disc list-inside space-y-1 text-xs text-slate-400">
+                        <li>Selesaikan <strong class="text-white">10 Kata Kunci</strong> teka-teki silang kolaborasi dalam diagram.</li>
+                        <li><strong>EBA Balance:</strong> Saldo awal Anda adalah <strong class="text-cyber-yellow">50% (Skeptis)</strong>.</li>
+                        <li><strong class="text-cyber-green">Deposit (+10%):</strong> Menebak kata yang benar menambah kepercayaan tim.</li>
+                        <li><strong class="text-cyber-accent">Withdrawal (-15%):</strong> Meminta petunjuk (Hint) akan memotong saldo EBA Anda karena dianggap mengambil tanpa memberi kontribusi.</li>
+                        <li><strong class="text-red-500">Salah Tebak (-5%):</strong> Kesalahan berturut-turut menurunkan reputasi Anda.</li>
+                        <li><strong>Target:</strong> Seluruh papan terisi penuh dengan Saldo EBA di zona <strong class="text-cyber-green">High Trust (Hijau)</strong>.</li>
+                        <li><strong class="text-red-500">Kalah:</strong> Jika saldo EBA Anda jatuh ke <strong class="text-red-600">0% (Bangkrut)</strong>, proyek runtuh dan tim Anda mengundurkan diri!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button onclick="startGameplay()" class="w-full bg-cyber-cyan text-black border-2 border-black py-4 font-extrabold text-lg uppercase tracking-widest hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all shadow-[4px_4px_0px_0px_#000] mt-6">
+                MULAI OPERASI REKONSILIASI TIM &raquo;
+            </button>
+        </section>
+
+        <!-- SECTION 3: CORE GAMEPLAY -->
+        <section id="section-gameplay" class="hidden w-full flex flex-col lg:flex-row gap-6 my-4">
+            
+            <!-- COLUMN A: STATUS & PROGRESS PANEL (LEFT/TOP) -->
+            <div class="w-full lg:w-1/3 flex flex-col gap-4">
+                
+                <!-- PROFILE & EBA WALLET -->
+                <div class="bg-cyber-panel border-4 border-black p-4 shadow-brutal-yellow">
+                    <div class="flex justify-between items-center mb-3">
+                        <div>
+                            <p class="text-xs text-slate-400">OPERATOR ACTIVE</p>
+                            <p id="player-profile" class="text-sm font-bold text-cyber-yellow">USER (NIK-XXXX)</p>
+                        </div>
+                        <div id="badge-display" class="px-2 py-1 bg-cyber-accent text-white text-xs font-bold uppercase tracking-widest border border-black">
+                            Novice Lead
+                        </div>
+                    </div>
+                    
+                    <!-- EBA PROGRESS BAR -->
+                    <div class="border-2 border-black bg-cyber-bg p-3">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs uppercase font-bold text-slate-300">TRUST BALANCE (EBA)</span>
+                            <span id="eba-percentage" class="text-sm font-bold text-cyber-green">50%</span>
+                        </div>
+                        <div class="w-full h-6 bg-slate-800 border-2 border-black relative overflow-hidden">
+                            <div id="eba-progress" class="h-full bg-cyber-green transition-all duration-500" style="width: 50%;"></div>
+                        </div>
+                        <p id="eba-status-text" class="text-[11px] text-slate-400 mt-2 italic">"Tim merasa Anda hanya sekadar menyelesaikan tugas. Hubungan masih berjarak."</p>
+                    </div>
+
+                    <!-- PROGRESS GAME LEVEL -->
+                    <div class="mt-3 flex justify-between items-center text-xs">
+                        <span class="text-slate-400">DILEMA TERPECAHKAN:</span>
+                        <span id="progress-solved-count" class="font-bold text-white">0 / 10 KATA</span>
+                    </div>
+                </div>
+
+                <!-- LIVE CONSOLE & FEEDBACK -->
+                <div class="bg-cyber-panel border-4 border-black p-4 flex-grow flex flex-col justify-between min-h-[220px]">
+                    <div>
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-2 mb-2">
+                            <span class="text-xs font-bold uppercase text-cyber-cyan">TIMELINE LOG & FEEDBACK</span>
+                            <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
+                        </div>
+                        <div id="game-console-log" class="text-xs text-slate-300 space-y-2 h-[180px] overflow-y-auto pr-1">
+                            <p class="text-slate-500">[SYSTEM] Mengunduh skenario problematik tim...</p>
+                            <p class="text-cyber-yellow">[INFO] Hubungan buruk menurunkan kecepatan pengerjaan proyek hingga 60%. Selesaikan crossword untuk melakukan deposit EBA!</p>
+                        </div>
+                    </div>
+                    <div id="clue-shortcut-box" class="mt-2 bg-cyber-bg p-2 border border-slate-800 text-xs">
+                        <span class="text-cyber-accent font-bold">INFO GRID:</span> Klik kotak pada tabel teka-teki silang untuk memunculkan kasus spesifik.
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN B: THE BOARD & CLUES (RIGHT/BOTTOM) -->
+            <div class="w-full lg:w-2/3 flex flex-col gap-4">
+                
+                <!-- THE CROSSWORD GRID -->
+                <div class="bg-cyber-panel border-4 border-black p-4 flex justify-center items-center overflow-auto shadow-brutal-cyan">
+                    <div class="relative overflow-auto max-w-full p-2">
+                        <!-- Crossword Grid Wrapper (Grid size 12x12) -->
+                        <div id="crossword-grid" class="grid grid-cols-12 gap-1 bg-cyber-bg p-2 border-2 border-black select-none" style="width: 480px; height: 480px;">
+                            <!-- Will be populated dynamically via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DYNAMIC CASE STATEMENT / CLUE BOX -->
+                <div id="current-clue-panel" class="bg-cyber-panel border-4 border-black p-4 border-l-cyber-accent">
+                    <div class="flex justify-between items-center mb-1">
+                        <span id="clue-direction-label" class="text-xs font-bold uppercase px-2 py-0.5 bg-cyber-accent text-white tracking-widest">
+                            DILEMA KERJA MENDATAR #1
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <span id="clue-length-label" class="text-xs font-mono text-slate-400">PANJANG: 8 HURUF</span>
+                        </div>
+                    </div>
+                    <p id="clue-text" class="text-sm md:text-base font-bold text-white leading-relaxed my-2">
+                        Pilih salah satu nomor teka-teki silang pada papan grid di atas untuk menganalisis dilema kasus dan menginput jawaban.
+                    </p>
+
+                    <!-- ANSWER INPUT BOX -->
+                    <div class="flex flex-col sm:flex-row gap-2 mt-4">
+                        <input type="text" id="answer-field" class="flex-grow bg-cyber-bg border-2 border-black p-3 text-white uppercase font-bold tracking-widest focus:outline-none focus:border-cyber-cyan text-sm" placeholder="Tulis jawaban pemecahan di sini..." disabled>
+                        <div class="flex gap-2">
+                            <button onclick="submitAnswer()" id="btn-submit-answer" class="px-6 py-3 bg-cyber-cyan text-black font-extrabold border-2 border-black hover:translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_#000] disabled:opacity-50" disabled>
+                                SUBMIT
+                            </button>
+                            <button onclick="triggerWithdrawalHint()" id="btn-hint" class="px-4 py-3 bg-cyber-yellow text-black font-extrabold border-2 border-black hover:translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_#000] text-xs disabled:opacity-50" title="Penarikan EBA -15%" disabled>
+                                HINT (-15%)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ALL CLUES SHEET LIST -->
+                <div class="bg-cyber-panel border-4 border-black p-4">
+                    <h4 class="text-xs font-bold uppercase text-slate-300 border-b border-slate-700 pb-2 mb-3">DAFTAR KASUS KUNCI TIM (KLIK UNTUK MEMILIH)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <h5 class="font-bold text-cyber-cyan mb-2">MENDATAR (HORIZONTAL):</h5>
+                            <ul id="clue-list-horizontal" class="space-y-2 max-h-[150px] overflow-y-auto pr-2">
+                                <!-- Horizontal clues populated here -->
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-cyber-accent mb-2">MENURUN (VERTICAL):</h5>
+                            <ul id="clue-list-vertical" class="space-y-2 max-h-[150px] overflow-y-auto pr-2">
+                                <!-- Vertical clues populated here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- SECTION 4: DEBRIEF & RESULT -->
+        <section id="section-debrief" class="hidden w-full max-w-2xl bg-cyber-panel border-4 border-black p-6 my-6 shadow-brutal-green text-center">
+            <div class="mb-4">
+                <span id="result-status-badge" class="px-4 py-1 text-black font-extrabold text-sm uppercase tracking-widest inline-block mb-2">
+                    PROYEK BERHASIL
+                </span>
+                <h2 id="result-title" class="text-4xl font-black text-white">THE TRUST LEVEL: ULTRA ACCREDITED</h2>
+            </div>
+
+            <!-- RESULT ILLUSTRATOR -->
+            <div class="bg-cyber-bg border-2 border-black p-4 mb-6">
+                <div class="text-6xl my-4" id="result-emoji">🏆</div>
+                <div class="text-sm text-slate-400">Total Trust Balance Akhir (EBA):</div>
+                <div class="text-5xl font-black text-cyber-green my-2 mono-font" id="result-eba-score">95%</div>
+                <p id="result-summary-text" class="text-sm text-slate-300 max-w-md mx-auto">
+                    Anda membuktikan bahwa hubungan tim yang sehat adalah kunci kelancaran teknis. Proyek selesai tepat waktu dengan kualitas kerja yang prima!
+                </p>
+                <!-- API SUBMISSION LOADER (SNEAKY / CLEAN UI) -->
+                <div id="api-status-container" class="mt-2 text-xs font-mono text-slate-400">
+                    <span id="api-status-text">💾 Menyelaraskan analitik dengan ledger pusat...</span>
+                </div>
+            </div>
+
+            <!-- REFLEXIVE MESSAGE BLOCK (THE AHA MOMENT) -->
+            <div class="bg-slate-900 border-l-4 border-cyber-yellow p-4 text-left mb-6">
+                <h4 class="text-xs uppercase font-extrabold text-cyber-yellow mb-1">💡 PESAN UTAMA REFLEKSI PEMBELAJARAN:</h4>
+                <p class="text-sm italic text-white" id="reflexive-statement">
+                    "Kerjaan Anda baru benar-benar beres jika hubungan Anda dengan rekan kerja berjalan dengan baik."
+                </p>
+            </div>
+
+            <!-- SCORE CARD / DETAILED FEEDBACKS -->
+            <div class="text-left mb-6">
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">DATA PENGERJAAN EVALUATIVE:</h4>
+                <div id="debrief-evaluation-list" class="space-y-2 max-h-[200px] overflow-y-auto pr-2 text-xs">
+                    <!-- Dynamic evaluation items -->
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="restartGame()" class="flex-1 bg-cyber-cyan text-black border-2 border-black py-3 font-bold uppercase tracking-wider hover:bg-white transition-all shadow-[3px_3px_0px_0px_#000]">
+                    COBA LAGI / RESTRUKTURISASI
+                </button>
+                <button onclick="window.print()" class="flex-1 bg-cyber-bg text-cyber-green border-2 border-cyber-green py-3 font-bold uppercase tracking-wider hover:bg-cyber-green hover:text-black transition-all shadow-[3px_3px_0px_0px_#39ff14]">
+                    CETAK SERTIFIKAT PRESTASI
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t-4 border-black bg-cyber-panel p-4 text-center text-xs text-slate-500">
+        <p>Education & Training Dept. &copy; 2026 | Secure Cyber-Industrial Learning Platform</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC & WEB AUDIO ENGINE -->
+    <script>
+        // Game State Variables
+        let playerName = "";
+        let playerNIK = "";
+        let ebaBalance = 50; // In Percentage (0-100)
+        let solvedWords = 0;
+        let selectedClueIndex = null;
+        let selectedClueType = null; // 'H' or 'V'
+        let bgmPlaying = false;
+        let bgmNode = null;
+        let audioCtx = null;
+
+        // [TECHNICAL UPGRADE] Variabel Pelacak Data Metrik Interaksi (Learning Analytics)
+        let jumlahSalahTebak = 0;
+        let jumlahPenggunaanHint = 0;
+        
+        // 10 Crossword Questions / Clues Dataset
+        // X, Y coordinate maps are relative to a 12x12 grid (0-indexed)
+        const clues = [
+            // Mendatar (Horizontal) - 'H'
+            {
+                id: 1,
+                num: 1,
+                direction: 'H',
+                x: 1, y: 1, // Start cell
+                length: 5,
+                answer: 'BANTU',
+                clue: 'Tindakan menolong rekan kerja yang sedang kesulitan. (Awalan B)',
+                feedbackCorrect: 'Benar! Saling BANTU membuat pekerjaan berat menjadi lebih ringan dan menumbuhkan rasa percaya.',
+                feedbackIncorrect: 'Salah. Coba pikirkan kata dasar dari menolong. (5 huruf)',
+                solved: false
+            },
+            {
+                id: 2,
+                num: 3,
+                direction: 'H',
+                x: 1, y: 4,
+                length: 4,
+                answer: 'KAMI',
+                clue: 'Kata ganti untuk menyebut "Saya dan tim" sebagai satu kesatuan. Bukan "aku" atau "mereka", tapi...',
+                feedbackCorrect: 'Tepat! Menggunakan kata KAMI menunjukkan Anda peduli pada keberhasilan bersama, bukan sekadar ego individu.',
+                feedbackIncorrect: 'Bukan itu. Ini adalah kata ganti orang pertama jamak. (4 huruf)',
+                solved: false
+            },
+            {
+                id: 3,
+                num: 6,
+                direction: 'H',
+                x: 7, y: 5,
+                length: 5,
+                answer: 'TANYA',
+                clue: 'Yang kita lakukan jika tidak mengerti instruksi dari atasan agar tidak salah arah. (Ber-...)',
+                feedbackCorrect: 'Luar biasa! Berani ber-TANYA menyelamatkan proyek dari kesalahan fatal akibat asumsi yang salah.',
+                feedbackIncorrect: 'Kurang tepat. Aktivitas meminta keterangan atau penjelasan. (5 huruf)',
+                solved: false
+            },
+            {
+                id: 4,
+                num: 7,
+                direction: 'H',
+                x: 3, y: 7,
+                length: 5,
+                answer: 'FOKUS',
+                clue: 'Konsentrasi penuh pada pekerjaan tanpa terdistraksi oleh HP atau hal lain.',
+                feedbackCorrect: 'Hebat! FOKUS sangat penting agar kualitas kerja terjaga dan tidak banyak bug.',
+                feedbackIncorrect: 'Bukan. Ini adalah kata lain dari konsentrasi. (5 huruf)',
+                solved: false
+            },
+            {
+                id: 5,
+                num: 9,
+                direction: 'H',
+                x: 7, y: 9,
+                length: 5,
+                answer: 'LUANG',
+                clue: 'Waktu kosong yang bisa digunakan untuk istirahat sejenak atau ngobrol akrab dengan tim. (Waktu L...)',
+                feedbackCorrect: 'Betul! Meluangkan waktu untuk bersosialisasi santai dapat mengisi deposit kepercayaan (EBA) tim.',
+                feedbackIncorrect: 'Salah. Waktu yang tidak terpakai/kosong. (5 huruf)',
+                solved: false
+            },
+            
+            // Menurun (Vertical) - 'V'
+            {
+                id: 6,
+                num: 1,
+                direction: 'V',
+                x: 1, y: 1,
+                length: 4,
+                answer: 'BAIK',
+                clue: 'Sikap ramah dan positif kepada semua orang di kantor. (Lawan kata dari Buruk)',
+                feedbackCorrect: 'Benar! Bersikap BAIK adalah fondasi awal untuk membangun hubungan kerja yang harmonis.',
+                feedbackIncorrect: 'Salah. Cari lawan kata dari "jahat" atau "buruk". (4 huruf)',
+                solved: false
+            },
+            {
+                id: 7,
+                num: 2,
+                direction: 'V',
+                x: 4, y: 1,
+                length: 6,
+                answer: 'TELITI',
+                clue: 'Sifat bekerja dengan hati-hati dan cermat agar pekerjaan tidak mengandung error.',
+                feedbackCorrect: 'Mantap! Sikap TELITI menunjukkan tanggung jawab Anda pada kualitas kerja.',
+                feedbackIncorrect: 'Salah. Sinonim dari cermat atau saksama. (6 huruf)',
+                solved: false
+            },
+            {
+                id: 8,
+                num: 4,
+                direction: 'V',
+                x: 3, y: 4,
+                length: 4,
+                answer: 'MAAF',
+                clue: 'Kata sederhana yang wajib diucapkan secara tulus saat kita melakukan kesalahan kerja.',
+                feedbackCorrect: 'Betul! Mengucapkan MAAF dengan jujur justru meningkatkan respek tim kepada Anda.',
+                feedbackIncorrect: 'Kurang pas. Kata apa yang diucapkan saat berbuat salah? (4 huruf)',
+                solved: false
+            },
+            {
+                id: 9,
+                num: 5,
+                direction: 'V',
+                x: 11, y: 4,
+                length: 6,
+                answer: 'GABUNG',
+                clue: 'Ikut serta ke dalam diskusi atau kelompok kerja (Bahasa Indonesianya Join).',
+                feedbackCorrect: 'Tepat sekali! Memutuskan untuk GABUNG dan berkolaborasi mengalahkan kebiasaan kerja sendiri-sendiri.',
+                feedbackIncorrect: 'Bukan itu. Kata lain dari bergabung atau join. (6 huruf)',
+                solved: false
+            },
+            {
+                id: 10,
+                num: 8,
+                direction: 'V',
+                x: 7, y: 7,
+                length: 5,
+                answer: 'SALAM',
+                clue: 'Sapaan ramah (seperti "Selamat Pagi") saat bertemu rekan kerja.',
+                feedbackCorrect: 'Luar biasa! Memberi SALAM mungkin terlihat sepele, tapi ini mengakui keberadaan rekan Anda secara positif.',
+                feedbackIncorrect: 'Salah. Tindakan menyapa atau memberi hormat. (5 huruf)',
+                solved: false
+            }
+        ];
+
+        // Web Audio API Sound System
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Play Synthesized Sounds using Oscillator Nodes (Lightweight, No External Files)
+        function playSFX(type) {
+            initAudio();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'correct') {
+                // Happy double tone beep
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (type === 'incorrect') {
+                // Low alert buzz
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 0.25);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'hint') {
+                // Cyber transaction sweep sound
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, now);
+                osc.frequency.exponentialRampToValueAtTime(330, now + 0.4);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                osc.start(now);
+                osc.stop(now + 0.5);
+            } else if (type === 'gameover') {
+                // Sad minor chord slide down
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.8);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.9);
+                osc.start(now);
+                osc.stop(now + 1.0);
+            } else if (type === 'win') {
+                // Arpeggio of victory
+                const notes = [261.63, 329.63, 392.00, 523.25, 659.25];
+                notes.forEach((freq, index) => {
+                    const noteOsc = audioCtx.createOscillator();
+                    const noteGain = audioCtx.createGain();
+                    noteOsc.connect(noteGain);
+                    noteGain.connect(audioCtx.destination);
+                    noteOsc.frequency.setValueAtTime(freq, now + (index * 0.15));
+                    noteGain.gain.setValueAtTime(0.15, now + (index * 0.15));
+                    noteGain.gain.exponentialRampToValueAtTime(0.01, now + (index * 0.15) + 0.4);
+                    noteOsc.start(now + (index * 0.15));
+                    noteOsc.stop(now + (index * 0.15) + 0.5);
+                });
+            }
+        }
+
+        // Loopable Background Music (Ambient Industrial Synthwave)
+        function toggleBGM() {
+            initAudio();
+            if (!audioCtx) return;
+
+            const btn = document.getElementById('btn-audio');
+
+            if (bgmPlaying) {
+                // Stop the music
+                if (bgmNode) {
+                    bgmNode.stop();
+                    bgmNode = null;
+                }
+                bgmPlaying = false;
+                btn.innerText = "🔈 PLAY BGM";
+                btn.classList.remove('bg-cyber-cyan', 'text-black');
+            } else {
+                // Resume/Start BGM using Custom Oscillators Synth
+                audioCtx.resume();
+                playAmbientBGM();
+                bgmPlaying = true;
+                btn.innerText = "🔇 MUTE BGM";
+                btn.classList.add('bg-cyber-cyan', 'text-black');
+            }
+        }
+
+        // Synthesize loopable Synth-Noir Drone BGM
+        function playAmbientBGM() {
+            if (!audioCtx) return;
+
+            // Simple synthesizer drone sequence that schedules loopable notes
+            const masterGain = audioCtx.createGain();
+            masterGain.gain.setValueAtTime(0.03, audioCtx.currentTime); // very low volume
+            masterGain.connect(audioCtx.destination);
+
+            function playDroneChord(rootFreq, duration) {
+                if (!bgmPlaying) return;
+                
+                const now = audioCtx.currentTime;
+                
+                // Bass Drone
+                const osc1 = audioCtx.createOscillator();
+                osc1.type = 'sawtooth';
+                osc1.frequency.setValueAtTime(rootFreq, now);
+                
+                // Perfect Fifth
+                const osc2 = audioCtx.createOscillator();
+                osc2.type = 'triangle';
+                osc2.frequency.setValueAtTime(rootFreq * 1.5, now);
+
+                // Filter for a smooth retro cyberpunk feel
+                const biquad = audioCtx.createBiquadFilter();
+                biquad.type = 'lowpass';
+                biquad.frequency.setValueAtTime(300, now);
+
+                const droneGain = audioCtx.createGain();
+                droneGain.gain.setValueAtTime(0, now);
+                droneGain.gain.linearRampToValueAtTime(1, now + 2); // slow fade-in
+                droneGain.gain.setValueAtTime(1, now + duration - 2);
+                droneGain.gain.linearRampToValueAtTime(0, now + duration); // slow fade-out
+
+                osc1.connect(biquad);
+                osc2.connect(biquad);
+                biquad.connect(droneGain);
+                droneGain.connect(masterGain);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + duration);
+                osc2.stop(now + duration);
+
+                // Schedule the next chord in the progression
+                const nextFreq = rootFreq === 110 ? 146.83 : (rootFreq === 146.83 ? 165.00 : 110); // A2 -> D3 -> E3 loop
+                bgmNode = {
+                    stop: () => {
+                        osc1.stop();
+                        osc2.stop();
+                    }
+                };
+
+                setTimeout(() => {
+                    if (bgmPlaying) {
+                        playDroneChord(nextFreq, duration);
+                    }
+                }, (duration - 1) * 1000);
+            }
+
+            // Start loop progression with 110Hz (A2)
+            playDroneChord(110, 10);
+        }
+
+        // Handle Registration Screen Submit
+        function handleStartGame(e) {
+            e.preventDefault();
+            playerName = document.getElementById('input-nama').value;
+            playerNIK = document.getElementById('input-nik').value;
+
+            document.getElementById('briefing-user-name').innerText = playerName;
+            document.getElementById('player-profile').innerText = `${playerName.toUpperCase()} (${playerNIK})`;
+
+            // Transition to Mission Briefing Screen
+            document.getElementById('section-gateway').classList.add('hidden');
+            document.getElementById('section-briefing').classList.remove('hidden');
+            
+            initAudio();
+        }
+
+        // Transition from Briefing to Main Core Game
+        function startGameplay() {
+            document.getElementById('section-briefing').classList.add('hidden');
+            document.getElementById('section-gameplay').classList.remove('hidden');
+            
+            // Auto start background music on first interaction
+            if (!bgmPlaying) {
+                toggleBGM();
+            }
+
+            buildCrosswordGrid();
+            renderClueLists();
+            updateEBADisplay();
+            logConsole("[SYSTEM] Game diinisialisasi. Hubungan tim dalam krisis! Saldo EBA rendah.");
+        }
+
+        // Build the physical 12x12 crossword grid DOM elements
+        function buildCrosswordGrid() {
+            const gridContainer = document.getElementById('crossword-grid');
+            gridContainer.innerHTML = '';
+
+            // Matrix initialization
+            const size = 12;
+            const matrix = Array(size).fill(null).map(() => Array(size).fill(null));
+
+            // Populate words metadata locations in matrix
+            clues.forEach((c) => {
+                let currentX = c.x;
+                let currentY = c.y;
+                for (let i = 0; i < c.length; i++) {
+                    if (currentY < size && currentX < size) {
+                        if (!matrix[currentY][currentX]) {
+                            matrix[currentY][currentX] = {
+                                hasLetter: true,
+                                letter: c.answer[i],
+                                isSolved: false,
+                                number: (i === 0) ? c.num : null,
+                                cluesLinked: [c.id],
+                                cellId: `cell-${currentY}-${currentX}`
+                            };
+                        } else {
+                            // Intersecting cell
+                            matrix[currentY][currentX].cluesLinked.push(c.id);
+                            if (i === 0 && !matrix[currentY][currentX].number) {
+                                matrix[currentY][currentX].number = c.num;
+                            }
+                        }
+                        if (c.direction === 'H') currentX++;
+                        else currentY++;
+                    }
+                }
+            });
+
+            // Draw DOM Cells
+            for (let y = 0; y < size; y++) {
+                for (let x = 0; x < size; x++) {
+                    const cellData = matrix[y][x];
+                    const cellDiv = document.createElement('div');
+                    
+                    if (cellData) {
+                        cellDiv.className = `grid-cell relative w-full h-full bg-slate-800 border border-slate-700 flex items-center justify-center cursor-pointer transition-all hover:bg-slate-700`;
+                        cellDiv.dataset.x = x;
+                        cellDiv.dataset.y = y;
+                        cellDiv.dataset.clues = JSON.stringify(cellData.cluesLinked);
+                        
+                        // Small Corner Clue Number
+                        if (cellData.number) {
+                            const numSpan = document.createElement('span');
+                            numSpan.className = 'absolute top-0.5 left-0.5 text-[8px] md:text-[9px] font-bold text-cyber-yellow leading-none';
+                            numSpan.innerText = cellData.number;
+                            cellDiv.appendChild(numSpan);
+                        }
+
+                        // Letter Display Container (Visually secret until solved)
+                        const letterSpan = document.createElement('span');
+                        letterSpan.id = `letter-${y}-${x}`;
+                        letterSpan.className = 'font-bold text-sm md:text-base text-white select-none hidden';
+                        letterSpan.innerText = cellData.letter;
+                        cellDiv.appendChild(letterSpan);
+
+                        // Click selection handler
+                        cellDiv.addEventListener('click', () => {
+                            selectClueByCell(cellData.cluesLinked[0]);
+                        });
+
+                    } else {
+                        // Empty Black Inactive Block
+                        cellDiv.className = 'w-full h-full bg-cyber-bg border border-cyber-bg';
+                    }
+
+                    gridContainer.appendChild(cellDiv);
+                }
+            }
+        }
+
+        // Render Sidebar clue sheet listing
+        function renderClueLists() {
+            const hList = document.getElementById('clue-list-horizontal');
+            const vList = document.getElementById('clue-list-vertical');
+            
+            hList.innerHTML = '';
+            vList.innerHTML = '';
+
+            clues.forEach((c) => {
+                const li = document.createElement('li');
+                li.id = `clue-item-${c.id}`;
+                li.className = `p-2 bg-cyber-bg border border-slate-800 rounded cursor-pointer hover:border-cyber-cyan transition-all ${c.solved ? 'opacity-40 line-through' : ''}`;
+                li.innerHTML = `<span class="font-bold text-cyber-yellow">#${c.num}</span> (${c.length} huruf): ${c.clue}`;
+                
+                li.addEventListener('click', () => {
+                    selectClue(c.id);
+                });
+
+                if (c.direction === 'H') {
+                    hList.appendChild(li);
+                } else {
+                    vList.appendChild(li);
+                }
+            });
+        }
+
+        // Logic when player selects a clue
+        function selectClue(clueId) {
+            const clue = clues.find(c => c.id === clueId);
+            if (!clue) return;
+
+            // Highlight clue in list
+            document.querySelectorAll('[id^="clue-item-"]').forEach(el => {
+                el.classList.remove('border-cyber-accent', 'border-cyber-cyan', 'bg-slate-800');
+            });
+            const selectedLi = document.getElementById(`clue-item-${clueId}`);
+            if (selectedLi) {
+                selectedLi.classList.add(clue.direction === 'H' ? 'border-cyber-cyan' : 'border-cyber-accent', 'bg-slate-800');
+            }
+
+            // Visual Board cells highlight helper
+            highlightGridCellsOfClue(clue);
+
+            // Populate Clue Action Panel
+            selectedClueIndex = clues.findIndex(c => c.id === clueId);
+            
+            const directionLabel = document.getElementById('clue-direction-label');
+            directionLabel.innerText = `DILEMA KERJA ${clue.direction === 'H' ? 'MENDATAR' : 'MENURUN'} #${clue.num}`;
+            if (clue.direction === 'H') {
+                directionLabel.className = "text-xs font-bold uppercase px-2 py-0.5 bg-cyber-cyan text-black tracking-widest";
+            } else {
+                directionLabel.className = "text-xs font-bold uppercase px-2 py-0.5 bg-cyber-accent text-white tracking-widest";
+            }
+
+            document.getElementById('clue-length-label').innerText = `PANJANG: ${clue.length} HURUF`;
+            document.getElementById('clue-text').innerText = clue.clue;
+
+            // Enable inputs
+            const ansField = document.getElementById('answer-field');
+            const submitBtn = document.getElementById('btn-submit-answer');
+            const hintBtn = document.getElementById('btn-hint');
+
+            if (clue.solved) {
+                ansField.value = clue.answer;
+                ansField.disabled = true;
+                submitBtn.disabled = true;
+                hintBtn.disabled = true;
+            } else {
+                ansField.value = '';
+                ansField.disabled = false;
+                submitBtn.disabled = false;
+                hintBtn.disabled = false;
+                ansField.focus();
+            }
+        }
+
+        // Find the matching clue ID when clicking on any active cell
+        function selectClueByCell(clueId) {
+            selectClue(clueId);
+        }
+
+        // Highlight cells corresponding to the selected crossword word
+        function highlightGridCellsOfClue(clue) {
+            // Remove previous highlight classes
+            document.querySelectorAll('.grid-cell').forEach(cell => {
+                cell.classList.remove('border-cyber-cyan', 'border-cyber-accent', 'scale-105');
+            });
+
+            // Apply highlighting
+            let currentX = clue.x;
+            let currentY = clue.y;
+            for (let i = 0; i < clue.length; i++) {
+                const cellEl = document.querySelector(`[data-x="${currentX}"][data-y="${currentY}"]`);
+                if (cellEl) {
+                    cellEl.classList.add(clue.direction === 'H' ? 'border-cyber-cyan' : 'border-cyber-accent');
+                    cellEl.classList.add('scale-105');
+                }
+                if (clue.direction === 'H') currentX++;
+                else currentY++;
+            }
+        }
+
+        // Submit and evaluate user's answer
+        function submitAnswer() {
+            if (selectedClueIndex === null) return;
+            const clue = clues[selectedClueIndex];
+            const rawInput = document.getElementById('answer-field').value.trim().toUpperCase();
+
+            if (!rawInput) return;
+
+            if (rawInput === clue.answer) {
+                // Correct Choice
+                clue.solved = true;
+                solvedWords++;
+                
+                // Show letters in board grid
+                revealWordOnBoard(clue);
+
+                // Add balance EBA Deposit
+                adjustEBABalance(10);
+                playSFX('correct');
+
+                logConsole(`[DEPOSIT] Hubungan Membaik! Kata "${clue.answer}" berhasil teridentifikasi. +10% EBA.`);
+                logConsole(`[ANALISIS] ${clue.feedbackCorrect}`);
+
+                // Update UI state
+                renderClueLists();
+                selectClue(clue.id); // Re-render selected clue state to lock inputs
+                checkGameEnding();
+
+            } else {
+                // Wrong Answer Penalty
+                jumlahSalahTebak++; // Tambah counter salah tebak untuk analitik
+                adjustEBABalance(-5);
+                playSFX('incorrect');
+                shakeInputFeedback();
+                logConsole(`[KESALAHAN COGNITIVE] Pola pikir tidak selaras! -5% EBA.`);
+                logConsole(`[FEEDBACK] ${clue.feedbackIncorrect}`);
+                checkGameEnding();
+            }
+
+            document.getElementById('progress-solved-count').innerText = `${solvedWords} / 10 KATA`;
+        }
+
+        // Reveal the characters inside grid boxes
+        function revealWordOnBoard(clue) {
+            let currentX = clue.x;
+            let currentY = clue.y;
+            for (let i = 0; i < clue.length; i++) {
+                const letterSpan = document.getElementById(`letter-${currentY}-${currentX}`);
+                if (letterSpan) {
+                    letterSpan.classList.remove('hidden');
+                }
+                const cellEl = document.querySelector(`[data-x="${currentX}"][data-y="${currentY}"]`);
+                if (cellEl) {
+                    cellEl.classList.add('bg-slate-900', 'border-cyber-green');
+                }
+                if (clue.direction === 'H') currentX++;
+                else currentY++;
+            }
+        }
+
+        // Shake visual representation of input form on wrong action
+        function shakeInputFeedback() {
+            const container = document.getElementById('current-clue-panel');
+            container.classList.add('shake-effect');
+            setTimeout(() => {
+                container.classList.remove('shake-effect');
+            }, 300);
+        }
+
+        // Hint Mechanism (EBA Withdrawal)
+        function triggerWithdrawalHint() {
+            if (selectedClueIndex === null) return;
+            const clue = clues[selectedClueIndex];
+
+            if (ebaBalance <= 15) {
+                logConsole(`[BLOKADE] Penarikan EBA dilarang! Saldo emosional Anda terlalu tipis (${ebaBalance}%) untuk melakukan penarikan bantuan.`);
+                return;
+            }
+
+            // Perform withdrawal
+            jumlahPenggunaanHint++; // Tambah counter hint untuk analitik
+            adjustEBABalance(-15);
+            playSFX('hint');
+
+            // Find first missing letter of answer
+            let hintLetter = "";
+            const inputField = document.getElementById('answer-field');
+            
+            // Give the user the first 2 letters
+            hintLetter = clue.answer.substring(0, 2);
+            inputField.value = hintLetter;
+            
+            logConsole(`[WITHDRAWAL] Anda mengambil "Hint" (-15% EBA). Tim terpaksa meluangkan waktu menjelaskan modul detail pada Anda. Clue awalan: "${hintLetter}..."`);
+            checkGameEnding();
+        }
+
+        // EBA State Manipulator
+        function adjustEBABalance(amount) {
+            ebaBalance = Math.min(100, Math.max(0, ebaBalance + amount));
+            updateEBADisplay();
+        }
+
+        // Sync EBA balance and change colors based on trust state
+        function updateEBADisplay() {
+            const ebaPercentText = document.getElementById('eba-percentage');
+            const ebaProgressBar = document.getElementById('eba-progress');
+            const statusText = document.getElementById('eba-status-text');
+            const badgeDisplay = document.getElementById('badge-display');
+
+            ebaPercentText.innerText = `${ebaBalance}%`;
+            ebaProgressBar.style.width = `${ebaBalance}%`;
+
+            // Dynamic color shift depending on trust level
+            if (ebaBalance >= 75) {
+                // High Trust (Green)
+                ebaProgressBar.className = "h-full bg-cyber-green transition-all duration-500";
+                statusText.innerText = `"High Trust Balance! Hubungan tim luar biasa solid, toleransi tinggi, penyelesaian bug dipercepat."`;
+                statusText.className = "text-[11px] text-cyber-green mt-2 italic font-bold";
+                
+                if (solvedWords >= 8) {
+                    badgeDisplay.innerText = "Trust Architect";
+                    badgeDisplay.className = "px-2 py-1 bg-cyber-green text-black text-xs font-bold uppercase tracking-widest border border-black";
+                } else {
+                    badgeDisplay.innerText = "Connection Expert";
+                    badgeDisplay.className = "px-2 py-1 bg-cyber-cyan text-black text-xs font-bold uppercase tracking-widest border border-black";
+                }
+
+            } else if (ebaBalance >= 40) {
+                // Mid Trust (Yellow)
+                ebaProgressBar.className = "h-full bg-cyber-yellow transition-all duration-500";
+                statusText.innerText = `"Skeptis / Transaksional. Tim Anda bekerja seperlunya, namun tidak ada inisiatif ekstra."`;
+                statusText.className = "text-[11px] text-cyber-yellow mt-2 italic";
+                badgeDisplay.innerText = "Junior Lead";
+                badgeDisplay.className = "px-2 py-1 bg-cyber-yellow text-black text-xs font-bold uppercase tracking-widest border border-black";
+            } else {
+                // Low Trust (Red)
+                ebaProgressBar.className = "h-full bg-cyber-accent transition-all duration-500";
+                statusText.innerText = `"Krisis Komunikasi Parah! Sentimen negatif tinggi. Rekan kerja tidak mau membantu kesalahan Anda."`;
+                statusText.className = "text-[11px] text-cyber-accent mt-2 italic font-bold";
+                badgeDisplay.innerText = "Toxic Element";
+                badgeDisplay.className = "px-2 py-1 bg-cyber-accent text-white text-xs font-bold uppercase tracking-widest border border-black";
+            }
+        }
+
+        // Print debug lines to user console box
+        function logConsole(text) {
+            const consoleBox = document.getElementById('game-console-log');
+            const p = document.createElement('p');
+            p.innerHTML = text;
+            consoleBox.appendChild(p);
+            consoleBox.scrollTop = consoleBox.scrollHeight;
+        }
+
+        // Assess conditions for Win / Lose states
+        function checkGameEnding() {
+            if (ebaBalance <= 0) {
+                // Game Over - Lose
+                endGame(false);
+            } else if (solvedWords === 10) {
+                // All questions resolved - Win or conditional check
+                if (ebaBalance >= 70) {
+                    endGame(true); // Complete Win
+                } else {
+                    // Finished all questions but EBA too low
+                    endGame(false); // Proyek rampung tapi tim bubar
+                }
+            }
+        }
+
+        // Show Game Over / Victory Screen
+        function endGame(isVictory) {
+            document.getElementById('section-gameplay').classList.add('hidden');
+            document.getElementById('section-debrief').classList.remove('hidden');
+
+            const statusBadge = document.getElementById('result-status-badge');
+            const title = document.getElementById('result-title');
+            const emoji = document.getElementById('result-emoji');
+            const ebaScore = document.getElementById('result-eba-score');
+            const summaryText = document.getElementById('result-summary-text');
+            const reflexiveStatement = document.getElementById('reflexive-statement');
+
+            ebaScore.innerText = `${ebaBalance}%`;
+
+            if (isVictory) {
+                statusBadge.innerText = "MISSI SUKSES";
+                statusBadge.className = "px-4 py-1 bg-cyber-green text-black font-extrabold text-sm uppercase tracking-widest inline-block mb-2";
+                title.innerText = "PROYEK SELESAI, TIM MENYATU!";
+                emoji.innerText = "🏆🚀";
+                summaryText.innerText = `Selamat ${playerName}! Seluruh teka-teki silang kolaborasi berhasil terpecahkan dengan Saldo EBA yang melimpah. Anda membuktikan bahwa skill teknis tak ada artinya tanpa jembatan komunikasi tim yang sehat.`;
+                reflexiveStatement.innerText = `"Kerjaan Anda baru benar-benar beres jika hubungan Anda dengan rekan kerja berjalan dengan baik."`;
+                playSFX('win');
+            } else {
+                statusBadge.innerText = "PROYEK GAGAL / KRISIS TIM";
+                statusBadge.className = "px-4 py-1 bg-cyber-accent text-white font-extrabold text-sm uppercase tracking-widest inline-block mb-2";
+                
+                if (ebaBalance <= 0) {
+                    title.innerText = "SALDO BANK EMOSIONAL BANGKRUT";
+                    emoji.innerText = "💀💥";
+                    summaryText.innerText = `Maaf ${playerName}, saldo Kepercayaan (EBA) tim Anda menyentuh angka 0%. Anda bertindak terlalu egois, mengabaikan kebutuhan tim, atau sering memaksakan kehendak tanpa melakukan deposit hubungan.`;
+                } else {
+                    title.innerText = "KODE SELESAI, TIM MENGUNDURKAN DIRI";
+                    emoji.innerText = "💔🚶";
+                    summaryText.innerText = `Seluruh teka-teki silang terisi, namun saldo EBA Anda tersisa sangat rendah. Rekan kerja Anda tidak tahan dengan lingkungan kerja toxic yang Anda pimpin dan memilih mengundurkan diri pasca proyek rilis.`;
+                }
+                
+                reflexiveStatement.innerText = `"Menyelesaikan tugas saja TIDAK CUKUP. Hubungan kolaboratif yang rusak akan memicu kehancuran struktural tim di jangka panjang."`;
+                playSFX('gameover');
+            }
+
+            // Populate Evaluative Score Card
+            populateEvaluationList();
+
+            // [TRIGGER TERINTEGRASI] Kirim data performa ke Google Sheets secara otomatis tanpa disadari pemain
+            sendGameDataToGoogleSheets();
+        }
+
+        // Render dynamic evaluations for all 10 scenarios
+        function populateEvaluationList() {
+            const listContainer = document.getElementById('debrief-evaluation-list');
+            listContainer.innerHTML = '';
+
+            clues.forEach((c) => {
+                const item = document.createElement('div');
+                item.className = `p-2 border border-slate-800 bg-cyber-bg flex flex-col justify-between ${c.solved ? 'border-l-4 border-l-cyber-green' : 'border-l-4 border-l-cyber-accent'}`;
+                
+                item.innerHTML = `
+                    <div class="flex justify-between font-bold">
+                        <span>#${c.num} [${c.direction === 'H' ? 'Mendatar' : 'Menurun'}] - ${c.answer}</span>
+                        <span class="${c.solved ? 'text-cyber-green' : 'text-cyber-accent'}">${c.solved ? 'TERPECAHKAN (DEPOSIT)' : 'GAGAL / DILEWATI'}</span>
+                    </div>
+                    <p class="text-slate-400 mt-1">${c.clue}</p>
+                    <p class="text-slate-300 mt-1 italic">${c.solved ? c.feedbackCorrect : c.feedbackIncorrect}</p>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        // Restart State Controller
+        function restartGame() {
+            // Reset dataset states
+            clues.forEach(c => c.solved = false);
+            ebaBalance = 50;
+            solvedWords = 0;
+            selectedClueIndex = null;
+            selectedClueType = null;
+            jumlahSalahTebak = 0;       // Reset analitik
+            jumlahPenggunaanHint = 0;   // Reset analitik
+
+            document.getElementById('section-debrief').classList.add('hidden');
+            document.getElementById('section-gameplay').classList.remove('hidden');
+
+            buildCrosswordGrid();
+            renderClueLists();
+            updateEBADisplay();
+            document.getElementById('progress-solved-count').innerText = "0 / 10 KATA";
+            
+            // Clean dynamic fields
+            document.getElementById('answer-field').value = '';
+            document.getElementById('answer-field').disabled = true;
+            document.getElementById('btn-submit-answer').disabled = true;
+            document.getElementById('btn-hint').disabled = true;
+            document.getElementById('clue-text').innerText = "Pilih salah satu nomor teka-teki silang pada papan grid di atas untuk menganalisis dilema kasus dan menginput jawaban.";
+
+            // Reset status pengiriman data
+            const statusText = document.getElementById('api-status-text');
+            statusText.innerText = "💾 Menyelaraskan analitik dengan ledger pusat...";
+            statusText.className = "text-slate-400";
+
+            logConsole("[SYSTEM] Restrukturisasi sistem dimulai. Mulai ulang bank kepercayaan!");
+        }
+
+        /**
+         * [CLIENT-SIDE API CONNECTION]
+         * Mengirimkan payload analitik pengerjaan game secara asinkron ke Google Apps Script.
+         */
+        async function sendGameDataToGoogleSheets() {
+            const GAS_URL = "https://script.google.com/macros/s/AKfycbyCs_RtkybQtJDRjAc9ch3S6kqyUuhpMNBdCoP590vnDmh1Q91UbvtzdHPfWWvPilM1Mg/exec";
+            const statusText = document.getElementById('api-status-text');
+
+            // 1. Buat Payload data sesuai dengan format penangkap di backend Google Apps Script
+            const playerData = {
+                Timestamp: new Date().toISOString(),
+                Nama_Karyawan: playerName,
+                NIK_Karyawan: playerNIK,
+                Status_Akhir_Game: document.getElementById('result-status-badge').innerText.trim(),
+                Kategori_Ending: document.getElementById('result-title').innerText.trim(),
+                Skor_Akhir_EBA: ebaBalance,
+                Total_Kata_Terjawab: solvedWords,
+                Jumlah_Salah_Tebak: jumlahSalahTebak,
+                Jumlah_Penggunaan_Hint: jumlahPenggunaanHint,
+                Log_Resolusi_Kasus: clues // Menyimpan resolusi status #1 - #10 (akan diconvert menjadi JSON string oleh Apps Script)
+            };
+
+            try {
+                // Update UI loader status pengiriman data
+                statusText.innerText = "⏳ Mengirim laporan ke database pusat...";
+                statusText.className = "text-cyber-yellow animate-pulse";
+
+                // 2 & 3. Fetch POST request dengan penanganan CORS aman (text/plain)
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    },
+                    body: JSON.stringify(playerData)
+                });
+
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    statusText.innerText = "✅ Berhasil Disinkronkan dengan Database Pusat.";
+                    statusText.className = "text-cyber-green font-bold";
+                } else {
+                    statusText.innerText = "❌ Gagal mengunggah laporan: " + result.message;
+                    statusText.className = "text-cyber-accent font-bold";
+                }
+
+            } catch (error) {
+                statusText.innerText = "❌ Koneksi bermasalah. Data gagal dikirim otomatis.";
+                statusText.className = "text-cyber-accent font-bold";
+                console.error("[ERROR SYSTEM]", error);
+            }
+        }
+    </script>
+
+</body>
+</html>
